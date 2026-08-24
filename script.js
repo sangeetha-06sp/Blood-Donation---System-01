@@ -577,3 +577,411 @@ function showMessage(
     `;
 
 }
+/* =====================================
+   PERMANENT DEFERRAL SCREENING
+===================================== */
+
+
+/* =====================================
+   LOAD QUESTIONS
+===================================== */
+
+function loadPermanentDeferralQuestions() {
+
+    const container =
+        document.getElementById(
+            "permanentDeferralQuestions"
+        );
+
+
+    if (!container) {
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    permanentDeferralRules.forEach(
+        (rule, index) => {
+
+            const question =
+                document.createElement("div");
+
+
+            question.className =
+                "deferral-question";
+
+
+            question.innerHTML = `
+
+                <div class="deferral-question-header">
+
+                    <div class="deferral-number">
+                        ${index + 1}
+                    </div>
+
+                    <div>
+
+                        <div class="deferral-question-text">
+
+                            ${rule.question}
+
+                        </div>
+
+                        <div class="deferral-category">
+
+                            ${rule.category}
+                            · Guideline criterion
+                            ${rule.sourceCriterion}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="deferral-options">
+
+                    <label>
+
+                        <input
+                            type="radio"
+                            name="deferral_${rule.id}"
+                            value="yes">
+
+                        Yes
+
+                    </label>
+
+
+                    <label>
+
+                        <input
+                            type="radio"
+                            name="deferral_${rule.id}"
+                            value="no">
+
+                        No
+
+                    </label>
+
+                </div>
+
+            `;
+
+
+            container.appendChild(question);
+
+        }
+    );
+
+}
+
+
+
+/* =====================================
+   SCREEN PERMANENT DEFERRAL
+===================================== */
+
+function screenPermanentDeferral() {
+
+    const result =
+        document.getElementById(
+            "permanentDeferralResult"
+        );
+
+
+    const flaggedRules = [];
+
+
+    const unansweredRules = [];
+
+
+    permanentDeferralRules.forEach(
+        (rule) => {
+
+            const selected =
+                document.querySelector(
+                    `input[name="deferral_${rule.id}"]:checked`
+                );
+
+
+            if (!selected) {
+
+                unansweredRules.push(rule);
+
+                return;
+
+            }
+
+
+            if (selected.value === "yes") {
+
+                flaggedRules.push(rule);
+
+            }
+
+        }
+    );
+
+
+
+    /* CHECK UNANSWERED */
+
+    if (unansweredRules.length > 0) {
+
+        result.innerHTML = `
+
+            <div class="permanent-result blocked">
+
+                <strong>
+                    ⚠️ Screening incomplete
+                </strong>
+
+                <p>
+                    Please answer all permanent-deferral
+                    screening questions before completing
+                    this section.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+
+    /* PERMANENT FLAG FOUND */
+
+    if (flaggedRules.length > 0) {
+
+
+        const donor =
+            JSON.parse(
+                localStorage.getItem(
+                    "bloodConnectDonor"
+                )
+            ) || {};
+
+
+        const reasons =
+            flaggedRules.map(
+                rule => ({
+
+                    criterion:
+                        rule.sourceCriterion,
+
+                    category:
+                        rule.category,
+
+                    reason:
+                        rule.reason
+
+                })
+            );
+
+
+        const screeningRecord = {
+
+            permanentDeferral: true,
+
+            medicalOfficerReviewRequired: true,
+
+            automaticMatchingBlocked: true,
+
+            screeningDate:
+                new Date().toISOString(),
+
+            reasons: reasons
+
+        };
+
+
+        donor.permanentDeferral =
+            true;
+
+
+        donor.medicalOfficerReviewRequired =
+            true;
+
+
+        donor.automaticMatchingBlocked =
+            true;
+
+
+        donor.permanentDeferralReasons =
+            reasons;
+
+
+        donor.permanentDeferralScreeningDate =
+            screeningRecord.screeningDate;
+
+
+        localStorage.setItem(
+
+            "bloodConnectDonor",
+
+            JSON.stringify(donor)
+
+        );
+
+
+        const reasonList =
+            flaggedRules.map(
+                rule =>
+                    `<li>
+                        ${rule.reason}
+                        <small>
+                            (Criterion ${rule.sourceCriterion})
+                        </small>
+                    </li>`
+            ).join("");
+
+
+        result.innerHTML = `
+
+            <div class="permanent-result blocked">
+
+                <strong>
+                    🔴 Permanent Deferral Flag Generated
+                </strong>
+
+                <p>
+
+                    One or more responses match
+                    permanent-deferral criteria.
+
+                </p>
+
+                <p>
+
+                    <strong>
+                        Automatic donor matching is BLOCKED.
+                    </strong>
+
+                </p>
+
+                <p>
+                    Medical Officer review is required
+                    before any final donor-selection
+                    decision.
+                </p>
+
+
+                <ul class="flag-list">
+
+                    ${reasonList}
+
+                </ul>
+
+            </div>
+
+        `;
+
+
+        return;
+
+    }
+
+
+
+    /* NO PERMANENT FLAG */
+
+    const donor =
+        JSON.parse(
+            localStorage.getItem(
+                "bloodConnectDonor"
+            )
+        ) || {};
+
+
+    donor.permanentDeferral =
+        false;
+
+
+    donor.medicalOfficerReviewRequired =
+        false;
+
+
+    donor.automaticMatchingBlocked =
+        false;
+
+
+    donor.permanentDeferralReasons =
+        [];
+
+
+    donor.permanentDeferralScreeningDate =
+        new Date().toISOString();
+
+
+    localStorage.setItem(
+
+        "bloodConnectDonor",
+
+        JSON.stringify(donor)
+
+    );
+
+
+    result.innerHTML = `
+
+        <div class="permanent-result clear">
+
+            <strong>
+                🟢 No Permanent-Deferral Flag
+            </strong>
+
+            <p>
+
+                No "Yes" response was recorded
+                for the permanent-deferral
+                screening questions.
+
+            </p>
+
+            <p>
+
+                The donor can proceed to the
+                <strong>
+                    Temporary Deferral Screening
+                </strong>
+                stage.
+
+            </p>
+
+            <p>
+
+                This is a screening result and
+                does not replace Medical Officer
+                assessment.
+
+            </p>
+
+        </div>
+
+    `;
+
+}
+
+
+
+/* =====================================
+   START SECTION 2
+===================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        loadPermanentDeferralQuestions();
+
+    }
+);

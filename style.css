@@ -526,3 +526,191 @@ footer {
     }
 
 }
+/* =========================
+   MEDICAL SCREENING
+========================= */
+
+.medical-warning {
+
+    background: #fff8e1;
+
+    border-left: 4px solid #d89b00;
+
+    padding: 16px;
+
+    border-radius: 8px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.medical-warning strong {
+
+    display: block;
+
+    margin-bottom: 6px;
+
+}
+
+
+.medical-warning p {
+
+    color: #665500;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+}
+
+
+/* DEFERRAL QUESTIONS */
+
+.deferral-question {
+
+    border: 1px solid #e0e3e8;
+
+    border-radius: 10px;
+
+    padding: 18px;
+
+    margin-bottom: 12px;
+
+    background: #fafbfc;
+
+}
+
+
+.deferral-question-header {
+
+    display: flex;
+
+    gap: 10px;
+
+    align-items: flex-start;
+
+}
+
+
+.deferral-number {
+
+    color: #a91515;
+
+    font-weight: bold;
+
+    min-width: 35px;
+
+}
+
+
+.deferral-question-text {
+
+    font-weight: bold;
+
+    line-height: 1.5;
+
+}
+
+
+.deferral-category {
+
+    color: #777;
+
+    font-size: 12px;
+
+    margin-top: 5px;
+
+}
+
+
+.deferral-options {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 15px;
+
+}
+
+
+.deferral-options label {
+
+    display: flex;
+
+    flex-direction: row;
+
+    align-items: center;
+
+    gap: 6px;
+
+    background: white;
+
+    border: 1px solid #ddd;
+
+    padding: 8px 14px;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+}
+
+
+.deferral-options input {
+
+    width: auto;
+
+}
+
+
+.permanent-result {
+
+    margin-top: 20px;
+
+    padding: 20px;
+
+    border-radius: 10px;
+
+    line-height: 1.6;
+
+}
+
+
+.permanent-result.blocked {
+
+    background: #ffebee;
+
+    border: 1px solid #ef9a9a;
+
+    color: #9b1515;
+
+}
+
+
+.permanent-result.clear {
+
+    background: #e8f5e9;
+
+    border: 1px solid #a5d6a7;
+
+    color: #256029;
+
+}
+
+
+.flag-list {
+
+    margin-top: 12px;
+
+    padding-left: 20px;
+
+}
+
+
+.flag-list li {
+
+    margin-bottom: 6px;
+
+}
