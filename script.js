@@ -1,17 +1,17 @@
 /* =====================================
-   DONOR REGISTRATION
+   BLOODCONNECT
+   DONOR REGISTRATION MODULE
 ===================================== */
 
 
 /* =====================================
-   AGE CALCULATION
+   CALCULATE AGE FROM DOB
 ===================================== */
 
 function calculateAge() {
 
     const dob =
         document.getElementById("dob").value;
-
 
     const ageField =
         document.getElementById("age");
@@ -28,7 +28,6 @@ function calculateAge() {
 
     const birthDate =
         new Date(dob);
-
 
     const today =
         new Date();
@@ -52,8 +51,7 @@ function calculateAge() {
 
         (
             monthDifference === 0 &&
-            today.getDate()
-            <
+            today.getDate() <
             birthDate.getDate()
         )
 
@@ -72,7 +70,7 @@ function calculateAge() {
 
 
 /* =====================================
-   DONOR REGISTRATION
+   REGISTER DONOR
 ===================================== */
 
 function registerDonor() {
@@ -101,12 +99,6 @@ function registerDonor() {
     const dob =
         document
         .getElementById("dob")
-        .value;
-
-
-    const age =
-        document
-        .getElementById("age")
         .value;
 
 
@@ -178,15 +170,39 @@ function registerDonor() {
 
 
 
-    /* AGE */
+    /* GET AGE */
 
-    const numericAge =
-        parseInt(age);
+    const ageText =
+        document
+        .getElementById("age")
+        .value;
+
+
+    const age =
+        parseInt(ageText);
+
 
 
     /* AGE CHECK */
 
-    if (numericAge < 18) {
+    if (isNaN(age)) {
+
+        showMessage(
+
+            "registrationMessage",
+
+            "⚠️ Please select a valid date of birth.",
+
+            "warning"
+
+        );
+
+        return;
+
+    }
+
+
+    if (age < 18) {
 
         showMessage(
 
@@ -203,7 +219,7 @@ function registerDonor() {
     }
 
 
-    if (numericAge > 65) {
+    if (age > 65) {
 
         showMessage(
 
@@ -229,7 +245,7 @@ function registerDonor() {
 
 
 
-    /* DONOR OBJECT */
+    /* CREATE DONOR RECORD */
 
     const donor = {
 
@@ -243,7 +259,7 @@ function registerDonor() {
 
         dateOfBirth: dob,
 
-        age: numericAge,
+        age: age,
 
         gender: gender,
 
@@ -252,12 +268,14 @@ function registerDonor() {
         address:
             document
             .getElementById("address")
-            .value,
+            .value
+            .trim(),
 
         location:
             document
             .getElementById("location")
-            .value,
+            .value
+            .trim(),
 
         donorType:
             document
@@ -269,7 +287,7 @@ function registerDonor() {
             .getElementById("emergency")
             .value,
 
-        maximumDistance:
+        maximumTravelDistance:
             document
             .getElementById("distance")
             .value,
@@ -277,8 +295,7 @@ function registerDonor() {
         consent: true,
 
         registrationDate:
-            new Date()
-            .toISOString(),
+            new Date().toISOString(),
 
         permanentDeferral: false,
 
@@ -290,7 +307,7 @@ function registerDonor() {
 
 
 
-    /* SAVE LOCALLY */
+    /* SAVE DONOR */
 
     localStorage.setItem(
 
@@ -302,7 +319,7 @@ function registerDonor() {
 
 
 
-    /* SUCCESS */
+    /* SUCCESS MESSAGE */
 
     showMessage(
 
@@ -325,7 +342,7 @@ function registerDonor() {
 
 
 
-    /* SHOW PROFILE */
+    /* DISPLAY PROFILE */
 
     displayDonorProfile(donor);
 
@@ -334,27 +351,25 @@ function registerDonor() {
 
 
 /* =====================================
-   DISPLAY PROFILE
+   DISPLAY DONOR PROFILE
 ===================================== */
 
 function displayDonorProfile(donor) {
 
 
-    const section =
-        document
-        .getElementById(
+    const profileSection =
+        document.getElementById(
             "profileSection"
         );
 
 
     const profile =
-        document
-        .getElementById(
+        document.getElementById(
             "profile"
         );
 
 
-    section.style.display =
+    profileSection.style.display =
         "block";
 
 
@@ -365,7 +380,9 @@ function displayDonorProfile(donor) {
 
             <div class="profile-item">
 
-                <span>Donor ID</span>
+                <span>
+                    Donor ID
+                </span>
 
                 <strong>
                     ${donor.donorId}
@@ -376,7 +393,9 @@ function displayDonorProfile(donor) {
 
             <div class="profile-item">
 
-                <span>Name</span>
+                <span>
+                    Full Name
+                </span>
 
                 <strong>
                     ${donor.name}
@@ -387,7 +406,9 @@ function displayDonorProfile(donor) {
 
             <div class="profile-item">
 
-                <span>Contact</span>
+                <span>
+                    Contact Number
+                </span>
 
                 <strong>
                     ${donor.contactNumber}
@@ -398,7 +419,9 @@ function displayDonorProfile(donor) {
 
             <div class="profile-item">
 
-                <span>Blood Group</span>
+                <span>
+                    Blood Group
+                </span>
 
                 <strong>
                     ${donor.bloodGroup}
@@ -409,7 +432,9 @@ function displayDonorProfile(donor) {
 
             <div class="profile-item">
 
-                <span>Date of Birth</span>
+                <span>
+                    Date of Birth
+                </span>
 
                 <strong>
                     ${donor.dateOfBirth}
@@ -420,7 +445,9 @@ function displayDonorProfile(donor) {
 
             <div class="profile-item">
 
-                <span>Current Age</span>
+                <span>
+                    Current Age
+                </span>
 
                 <strong>
                     ${donor.age} years
@@ -431,7 +458,9 @@ function displayDonorProfile(donor) {
 
             <div class="profile-item">
 
-                <span>Gender</span>
+                <span>
+                    Gender
+                </span>
 
                 <strong>
                     ${donor.gender}
@@ -442,7 +471,9 @@ function displayDonorProfile(donor) {
 
             <div class="profile-item">
 
-                <span>Weight</span>
+                <span>
+                    Weight
+                </span>
 
                 <strong>
                     ${donor.weight} kg
@@ -453,7 +484,9 @@ function displayDonorProfile(donor) {
 
             <div class="profile-item">
 
-                <span>Location</span>
+                <span>
+                    Location
+                </span>
 
                 <strong>
                     ${donor.location || "Not provided"}
@@ -464,7 +497,26 @@ function displayDonorProfile(donor) {
 
             <div class="profile-item">
 
-                <span>Emergency Availability</span>
+                <span>
+                    Donor Type
+                </span>
+
+                <strong>
+                    ${
+                        donor.donorType === "first"
+                        ? "First-time Donor"
+                        : "Repeat Donor"
+                    }
+                </strong>
+
+            </div>
+
+
+            <div class="profile-item">
+
+                <span>
+                    Emergency Availability
+                </span>
 
                 <strong>
                     ${donor.emergencyAvailability}
@@ -475,20 +527,9 @@ function displayDonorProfile(donor) {
 
             <div class="profile-item">
 
-                <span>Registration Date</span>
-
-                <strong>
-                    ${new Date(
-                        donor.registrationDate
-                    ).toLocaleString()}
-                </strong>
-
-            </div>
-
-
-            <div class="profile-item">
-
-                <span>Eligibility Status</span>
+                <span>
+                    Eligibility
+                </span>
 
                 <strong>
                     Pending Screening
@@ -510,24 +551,29 @@ function displayDonorProfile(donor) {
 ===================================== */
 
 function showMessage(
+
     elementId,
+
     message,
+
     type
+
 ) {
 
     const element =
-        document
-        .getElementById(
+        document.getElementById(
             elementId
         );
 
 
-    element.innerHTML =
+    element.innerHTML = `
 
-        `
         <div class="status ${type}">
+
             ${message}
+
         </div>
-        `;
+
+    `;
 
 }

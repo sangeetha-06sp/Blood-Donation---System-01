@@ -1,8 +1,6 @@
 * {
     box-sizing: border-box;
-
     margin: 0;
-
     padding: 0;
 }
 
@@ -23,36 +21,63 @@ body {
 }
 
 
+/* =========================
+   HEADER
+========================= */
 
-/* HEADER */
-
-header {
+.header {
 
     background: #a91515;
 
     color: white;
 
-    padding: 25px 6%;
+    padding: 22px 6%;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
 
 }
 
-header h1 {
+
+.header h1 {
+
+    font-size: 25px;
 
     margin-bottom: 5px;
 
 }
 
-header p {
 
-    opacity: .85;
+.header p {
+
+    font-size: 14px;
+
+    opacity: 0.85;
 
 }
 
 
+.status-online {
 
-/* MAIN */
+    background: rgba(255,255,255,0.15);
 
-main {
+    padding: 8px 13px;
+
+    border-radius: 20px;
+
+    font-size: 13px;
+
+}
+
+
+/* =========================
+   CONTAINER
+========================= */
+
+.container {
 
     width: 92%;
 
@@ -63,8 +88,72 @@ main {
 }
 
 
+/* =========================
+   INTRO
+========================= */
 
-/* CARD */
+.intro {
+
+    background: white;
+
+    padding: 35px;
+
+    border-radius: 16px;
+
+    margin-bottom: 25px;
+
+    box-shadow:
+        0 5px 20px
+        rgba(0,0,0,0.06);
+
+}
+
+
+.tag {
+
+    color: #a91515;
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    letter-spacing: 1px;
+
+}
+
+
+.intro h2 {
+
+    font-size: 34px;
+
+    line-height: 1.2;
+
+    margin: 12px 0;
+
+}
+
+
+.intro h2 span {
+
+    color: #a91515;
+
+}
+
+
+.intro p {
+
+    color: #666;
+
+    line-height: 1.6;
+
+    max-width: 750px;
+
+}
+
+
+/* =========================
+   CARD
+========================= */
 
 .card {
 
@@ -72,21 +161,22 @@ main {
 
     padding: 30px;
 
-    border-radius: 15px;
+    border-radius: 16px;
+
+    margin-bottom: 25px;
 
     box-shadow:
         0 5px 20px
-        rgba(0,0,0,.07);
-
-    margin-bottom: 25px;
+        rgba(0,0,0,0.06);
 
 }
 
 
+/* =========================
+   SECTION HEADING
+========================= */
 
-/* SECTION TITLE */
-
-.section-title {
+.section-heading {
 
     display: flex;
 
@@ -94,12 +184,12 @@ main {
 
     align-items: flex-start;
 
-    margin-bottom: 30px;
+    margin-bottom: 28px;
 
 }
 
 
-.section-title > span {
+.number {
 
     color: #a91515;
 
@@ -107,25 +197,30 @@ main {
 
     font-size: 14px;
 
+    min-width: 25px;
+
 }
 
 
-.section-title h2 {
+.section-heading h2 {
 
     margin-bottom: 5px;
 
 }
 
 
-.section-title p {
+.section-heading p {
 
     color: #777;
+
+    font-size: 14px;
 
 }
 
 
-
-/* FORM */
+/* =========================
+   FORM
+========================= */
 
 .form-grid {
 
@@ -150,13 +245,12 @@ main {
 
 .form-group.full {
 
-    grid-column:
-        1 / -1;
+    grid-column: 1 / -1;
 
 }
 
 
-label {
+.form-group label {
 
     font-size: 14px;
 
@@ -175,15 +269,15 @@ textarea {
 
     padding: 12px;
 
-    border: 1px solid #d5d9df;
+    border: 1px solid #d4d8df;
 
     border-radius: 8px;
+
+    background: white;
 
     font-size: 14px;
 
     outline: none;
-
-    background: white;
 
 }
 
@@ -206,8 +300,9 @@ textarea {
 }
 
 
-
-/* CONSENT */
+/* =========================
+   CONSENT
+========================= */
 
 .consent {
 
@@ -239,19 +334,18 @@ textarea {
 
 .consent label {
 
-    font-weight: normal;
-
-    margin: 0;
+    font-size: 14px;
 
     line-height: 1.5;
 
 }
 
 
+/* =========================
+   BUTTON
+========================= */
 
-/* BUTTON */
-
-button {
+.primary-button {
 
     margin-top: 22px;
 
@@ -272,15 +366,16 @@ button {
 }
 
 
-button:hover {
+.primary-button:hover {
 
     background: #850f0f;
 
 }
 
 
-
-/* STATUS */
+/* =========================
+   MESSAGES
+========================= */
 
 .status {
 
@@ -322,8 +417,9 @@ button:hover {
 }
 
 
-
-/* PROFILE */
+/* =========================
+   PROFILE
+========================= */
 
 .profile-grid {
 
@@ -334,16 +430,14 @@ button:hover {
 
     gap: 12px;
 
-    margin-top: 20px;
-
 }
 
 
 .profile-item {
 
-    padding: 15px;
-
     background: #f8fafc;
+
+    padding: 15px;
 
     border-radius: 8px;
 
@@ -354,9 +448,9 @@ button:hover {
 
     display: block;
 
-    font-size: 12px;
-
     color: #777;
+
+    font-size: 12px;
 
     margin-bottom: 5px;
 
@@ -370,8 +464,9 @@ button:hover {
 }
 
 
-
-/* FOOTER */
+/* =========================
+   FOOTER
+========================= */
 
 footer {
 
@@ -386,10 +481,29 @@ footer {
 }
 
 
-
-/* MOBILE */
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 700px) {
+
+    .header {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 12px;
+
+    }
+
+
+    .intro h2 {
+
+        font-size: 27px;
+
+    }
+
 
     .form-grid {
 
@@ -397,11 +511,13 @@ footer {
 
     }
 
+
     .form-group.full {
 
         grid-column: auto;
 
     }
+
 
     .profile-grid {
 
