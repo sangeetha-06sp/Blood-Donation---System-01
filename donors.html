@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Donor Dashboard</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -12,7 +13,11 @@
     <div class="container">
 
         <h1>🩸 Donor Dashboard</h1>
+
         <p>Registered Blood Donors</p>
+
+
+        <!-- Blood Group Dashboard -->
 
         <div class="dashboard">
 
@@ -63,10 +68,15 @@
 
         </div>
 
+
+        <!-- Registered Donors -->
+
         <h2>Registered Donors</h2>
 
         <table>
+
             <thead>
+
                 <tr>
                     <th>Name</th>
                     <th>Age</th>
@@ -74,18 +84,31 @@
                     <th>Location</th>
                     <th>Status</th>
                 </tr>
+
             </thead>
 
             <tbody id="donorTable">
-                <!-- Donors will appear here -->
+
+                <!-- Donor details will be displayed here -->
+
             </tbody>
+
         </table>
 
+
         <br>
+
+
+        <!-- Back Button -->
 
         <a href="index.html">← Back to Registration</a>
 
     </div>
+
+
+    <!-- JavaScript -->
+
+    <script src="donors.js"></script>
 
 </body>
 </html>
