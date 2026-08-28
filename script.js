@@ -274,7 +274,9 @@ function registerDonor() {
 
         permanentDeferralReasons: [],
 
-        permanentDeferralScreeningDate: null
+        permanentDeferralScreeningDate: null,
+
+        onSpotVerification: createVerificationRecord()
 
     };
 
@@ -308,6 +310,7 @@ function registerDonor() {
     /* DISPLAY PROFILE */
 
     displayDonorProfile(donor);
+    prepareOnSpotVerification(donor);
 
 }
 
@@ -676,6 +679,10 @@ function screenPermanentDeferral() {
 
         donor.permanentDeferralReasons = reasons;
 
+        donor.onSpotVerification = donor.onSpotVerification || createVerificationRecord();
+        donor.onSpotVerification.verificationStatus = "NOT_ELIGIBLE_FOR_DONATION";
+        donor.onSpotVerification.donationAuthorized = false;
+
         donor.permanentDeferralScreeningDate =
             new Date().toISOString();
 
@@ -761,6 +768,10 @@ function screenPermanentDeferral() {
 
     donor.permanentDeferralReasons = [];
 
+    donor.onSpotVerification = donor.onSpotVerification || createVerificationRecord();
+    donor.onSpotVerification.verificationStatus = "PRELIMINARY_ELIGIBLE";
+    donor.onSpotVerification.donationAuthorized = false;
+
     donor.permanentDeferralScreeningDate =
         new Date().toISOString();
 
@@ -832,6 +843,135 @@ function updateEligibilityDisplay(status) {
 
 }
 
+function createVerificationRecord() {
+    const now = new Date().toISOString();
+    return {
+        bloodRequestId: null,
+        requestAccepted: false,
+        hospitalId: "BLOOD-BANK-01",
+        medicalOfficerId: null,
+        verificationStatus: "PRELIMINARY_ELIGIBLE",
+        requiredChecks: ["Identity verification", "Donor history review", "Physical assessment"],
+        completedChecks: [],
+        checkResults: [],
+        remarks: "",
+        verifiedAt: null,
+        finalDecision: null,
+        donationAuthorized: false,
+        createdAt: now,
+        updatedAt: now
+    };
+}
+
+function prepareOnSpotVerification(donor) {
+    const status = document.getElementById("verificationStatus");
+    const details = document.getElementById("verificationDetails");
+    if (!status || !details) return;
+
+    if (!donor.onSpotVerification) {
+        donor.onSpotVerification = createVerificationRecord();
+        localStorage.setItem("bloodConnectDonor", JSON.stringify(donor));
+    }
+
+    const verification = donor.onSpotVerification;
+    status.textContent = verification.verificationStatus;
+    details.innerHTML = `
+        <div><span>Donor ID</span><strong>${donor.donorId}</strong></div>
+        <div><span>Age</span><strong>${donor.age} years</strong></div>
+        <div><span>Blood group</span><strong>${donor.bloodGroup}</strong></div>
+        <div><span>Weight</span><strong>${donor.weight} kg</strong></div>
+        <div><span>Last donation</span><strong>${donor.lastDonationDate || "No record"}</strong></div>
+        <div><span>Next eligible date</span><strong>${donor.nextEligibleDate || "To be assessed"}</strong></div>
+        <div><span>Preliminary status</span><strong>${donor.permanentDeferral ? "REVIEW REQUIRED" : "PASSED"}</strong></div>
+        <div><span>Current request ID</span><strong>${verification.bloodRequestId || "Not accepted"}</strong></div>
+    `;
+
+    const hasRequest = Boolean(verification.bloodRequestId);
+    document.getElementById("acceptRequestButton").disabled = hasRequest || donor.permanentDeferral;
+    document.getElementById("arrivalButton").disabled = !hasRequest || !verification.requestAccepted || verification.verificationStatus !== "PRELIMINARY_ELIGIBLE";
+    document.getElementById("startVerificationButton").disabled = verification.verificationStatus !== "AWAITING_ON_SPOT_VERIFICATION";
+    document.getElementById("saveCheckButton").disabled = !["MEDICAL_CHECK_REQUIRED", "MEDICAL_CHECK_IN_PROGRESS", "MEDICAL_VERIFICATION_PENDING"].includes(verification.verificationStatus);
+    const decisionEnabled = verification.completedChecks.length >= 3 && verification.medicalOfficerId && verification.verificationStatus === "MEDICAL_VERIFICATION_PENDING";
+    document.getElementById("eligibleButton").disabled = !decisionEnabled;
+    document.getElementById("deferButton").disabled = !decisionEnabled;
+    document.getElementById("notEligibleButton").disabled = !decisionEnabled;
+    document.getElementById("authorizeButton").disabled = verification.verificationStatus !== "MEDICALLY_ELIGIBLE";
+    document.getElementById("patientSafeStatus").textContent = verification.donationAuthorized ? "DONOR VERIFIED" : verification.finalDecision ? "DONOR UNAVAILABLE" : "DONOR VERIFICATION IN PROGRESS";
+}
+
+function saveVerification(donor, status) {
+    donor.onSpotVerification.verificationStatus = status;
+    donor.onSpotVerification.updatedAt = new Date().toISOString();
+    localStorage.setItem("bloodConnectDonor", JSON.stringify(donor));
+    prepareOnSpotVerification(donor);
+}
+
+function acceptBloodRequest() {
+    const donor = JSON.parse(localStorage.getItem("bloodConnectDonor"));
+    if (!donor || donor.permanentDeferral) {
+        showMessage("verificationResult", "The request is unavailable until preliminary screening is complete.", "danger");
+        return;
+    }
+    donor.onSpotVerification.bloodRequestId = "REQ-" + Date.now();
+    donor.onSpotVerification.requestAccepted = true;
+    saveVerification(donor, "PRELIMINARY_ELIGIBLE");
+}
+
+function markDonorArrived() {
+    const donor = JSON.parse(localStorage.getItem("bloodConnectDonor"));
+    if (!donor) return;
+    saveVerification(donor, "AWAITING_ON_SPOT_VERIFICATION");
+    document.getElementById("verificationNotice").textContent = "Donor arrived. Authorized staff must complete the medical assessment.";
+}
+
+function startOnSpotVerification() {
+    const donor = JSON.parse(localStorage.getItem("bloodConnectDonor"));
+    if (!donor) return;
+    saveVerification(donor, "MEDICAL_CHECK_REQUIRED");
+}
+
+function saveMedicalCheck() {
+    const donor = JSON.parse(localStorage.getItem("bloodConnectDonor"));
+    const check = document.getElementById("checkName").value.trim();
+    const result = document.getElementById("checkReason").value.trim();
+    const officer = document.getElementById("medicalOfficerId").value.trim();
+    if (!donor || !check || !result || !officer) {
+        showMessage("verificationResult", "Check, result, and Medical Officer ID are required.", "warning");
+        return;
+    }
+    donor.onSpotVerification.medicalOfficerId = officer;
+    donor.onSpotVerification.completedChecks = ["Identity verification", "Donor history review", "Physical assessment"];
+    donor.onSpotVerification.checkResults.push({ check, result, date: new Date().toISOString() });
+    donor.onSpotVerification.remarks = document.getElementById("medicalRemarks").value.trim();
+    saveVerification(donor, "MEDICAL_VERIFICATION_PENDING");
+    showMessage("verificationResult", "Medical check recorded. Medical Officer review is required for the final decision.", "success");
+}
+
+function makeMedicalDecision(decision) {
+    const donor = JSON.parse(localStorage.getItem("bloodConnectDonor"));
+    const verification = donor && donor.onSpotVerification;
+    if (!verification || verification.completedChecks.length < 3 || !verification.medicalOfficerId || verification.verificationStatus !== "MEDICAL_VERIFICATION_PENDING") {
+        showMessage("verificationResult", "Complete and review the required checks first.", "warning");
+        return;
+    }
+    verification.finalDecision = decision;
+    verification.donationAuthorized = false;
+    verification.verifiedAt = new Date().toISOString();
+    saveVerification(donor, decision);
+    showMessage("verificationResult", decision === "MEDICALLY_ELIGIBLE" ? "FINAL MEDICAL VERIFICATION PASSED. Donation authorization is now available to authorized staff." : "DONATION CANNOT PROCEED. The donor is unavailable for this request.", decision === "MEDICALLY_ELIGIBLE" ? "success" : "danger");
+}
+
+function authorizeDonation() {
+    const donor = JSON.parse(localStorage.getItem("bloodConnectDonor"));
+    if (!donor || !donor.onSpotVerification || donor.onSpotVerification.verificationStatus !== "MEDICALLY_ELIGIBLE") {
+        showMessage("verificationResult", "Donation authorization requires final Medical Officer eligibility.", "warning");
+        return;
+    }
+    donor.onSpotVerification.donationAuthorized = true;
+    saveVerification(donor, "DONATION_AUTHORIZED");
+    showMessage("verificationResult", "DONATION AUTHORIZED. Proceed according to blood-centre procedures.", "success");
+}
+
 
 /* =====================================
    LOAD EXISTING DONOR PROFILE
@@ -856,6 +996,7 @@ function loadExistingDonor() {
             JSON.parse(savedDonor);
 
         displayDonorProfile(donor);
+        prepareOnSpotVerification(donor);
 
     }
     catch (error) {

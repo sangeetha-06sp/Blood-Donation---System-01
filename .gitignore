@@ -1,4 +1,2 @@
-node_modules/
 .env
-.env.local
-.DS_Store
+node_modules/npm.cmd install dotenv

@@ -489,6 +489,80 @@
 
 
 
+<!-- ON-SPOT MEDICAL VERIFICATION -->
+<section class="card" id="verificationSection">
+    <div class="section-heading">
+        <div class="number">03</div>
+        <div>
+            <h2>On-Spot Donor Verification</h2>
+            <p>Blood-bank staff must complete the medical assessment before donation.</p>
+        </div>
+    </div>
+
+    <div class="verification-banner">
+        <span>Current stage</span>
+        <strong id="verificationStatus">PRELIMINARY SCREENING REQUIRED</strong>
+        <p id="verificationNotice">Questionnaire eligibility never authorizes donation.</p>
+    </div>
+
+    <div class="verification-grid">
+        <div>
+            <h3>Donor verification</h3>
+            <div id="verificationDetails" class="verification-details"></div>
+        </div>
+        <div>
+            <h3>Required checks</h3>
+            <ul class="check-list">
+                <li>Identity verification</li>
+                <li>Donor history review</li>
+                <li>Physical assessment</li>
+                <li>Additional medical verification, if required</li>
+            </ul>
+            <div class="verification-actions">
+                <button class="secondary-button" id="acceptRequestButton" onclick="acceptBloodRequest()">Accept Blood Request</button>
+                <button class="secondary-button" id="arrivalButton" onclick="markDonorArrived()" disabled>Mark Donor Arrived</button>
+                <button class="secondary-button" id="startVerificationButton" onclick="startOnSpotVerification()" disabled>Start Verification</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="medical-check-panel">
+        <h3>Medical verification record</h3>
+        <p class="muted">Complete this record as authorized medical staff. Questionnaire results do not clear a donor.</p>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="checkName">Check / Investigation *</label>
+                <input id="checkName" type="text" placeholder="e.g. Vital signs and hemoglobin">
+            </div>
+            <div class="form-group">
+                <label for="medicalOfficerId">Medical Officer ID *</label>
+                <input id="medicalOfficerId" type="text" placeholder="Authorized staff ID">
+            </div>
+            <div class="form-group full">
+                <label for="checkReason">Reason / Result *</label>
+                <textarea id="checkReason" placeholder="Record the assessment result"></textarea>
+            </div>
+            <div class="form-group full">
+                <label for="medicalRemarks">Medical Officer Remarks</label>
+                <textarea id="medicalRemarks" placeholder="Add relevant remarks"></textarea>
+            </div>
+        </div>
+        <button class="secondary-button" id="saveCheckButton" onclick="saveMedicalCheck()" disabled>Save Medical Check</button>
+        <div class="decision-actions">
+            <button class="primary-button" id="eligibleButton" onclick="makeMedicalDecision('MEDICALLY_ELIGIBLE')" disabled>Mark Medically Eligible</button>
+            <button class="danger-button" id="deferButton" onclick="makeMedicalDecision('MEDICALLY_DEFERRED')" disabled>Defer Donor</button>
+            <button class="danger-button" id="notEligibleButton" onclick="makeMedicalDecision('NOT_ELIGIBLE_FOR_DONATION')" disabled>Not Eligible</button>
+            <button class="primary-button" id="authorizeButton" onclick="authorizeDonation()" disabled>Authorize Donation</button>
+        </div>
+        <div id="verificationResult"></div>
+    </div>
+
+    <div class="patient-safe-status">
+        <span>Patient-visible status</span>
+        <strong id="patientSafeStatus">DONOR VERIFICATION IN PROGRESS</strong>
+    </div>
+</section>
+
     <!-- FOOTER -->
 
     <footer>
